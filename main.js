@@ -123,7 +123,7 @@ if (require.main === module) {
       input: process.stdin,
       output: process.stdout,
     });
-    const fileName = await readInterface.question("ファイル名を入力してください(例：sample.yaml) >");
+    const fileName = await readInterface.question("ファイル名を入力してください(例：sample.yaml) > ");
     readInterface.close();
 
     let outputPath = path.join(__dirname, "api");
@@ -192,7 +192,7 @@ if (require.main === module) {
               // in, typeに応じてパラメータを作成する
               let parameterVariable;
               if (api["parameters"].length == index + 1) {
-                parameterVariable = changeCase.camelCase(parameter.name)
+                parameterVariable = changeCase.camelCase(parameter.name);
               } else {
                 parameterVariable = changeCase.camelCase(parameter.name) + ", ";
               }
@@ -200,16 +200,20 @@ if (require.main === module) {
               // パラメータの種類に応じてアノテーション付与の有無等を決定
               let paramIn = parameter.in;
               let parameterType;
+              let parameterAnnotation;
               if (paramIn == "path") {
-                parameterType = `@PathParam(\"${parameter.name}\") ${changeCase.pascalCase(parameter.type)}`
+                parameterAnnotation = `@PathParam(\"${parameter.name}\") `;
+                parameterType = `${changeCase.pascalCase(parameter.type)}`;
               } else if (paramIn == "query") {
-                parameterType = `@QueryParam(\"${parameter.name}\") ${changeCase.pascalCase(parameter.type)}`
+                parameterAnnotation = `@QueryParam(\"${parameter.name}\") `;
+                parameterType = `${changeCase.pascalCase(parameter.type)}`;
               } else {
-                parameterType = changeCase.pascalCase(parameter.name)
+                parameterType = changeCase.pascalCase(parameter.name);
               }
 
               parameters.push({
                 parameterType: parameterType,
+                parameterAnnotation: parameterAnnotation,
                 parameterVariable: parameterVariable
               })
             })

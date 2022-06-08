@@ -34,7 +34,7 @@ public class {{classObject.pascalClassname}}Controller extends ControllerBase {
     @Produces("{{{produce}}}")
     @Consumes("application/json")
     @{{httpMethod}}
-    public Response {{methodName}}({{#parameters}}{{{parameterType}}} {{parameterVariable}}{{/parameters}}) throws Exception {
+    public Response {{methodName}}({{#parameters}}{{{parameterAnnotation}}}{{{parameterType}}} {{parameterVariable}}{{/parameters}}) throws Exception {
         {{^existResponse}}{{classObject.camelClassname}}Service.{{methodName}}({{#parameters}}{{{parameterVariable}}}{{/parameters}});{{/existResponse}}
         {{#existResponse}}return Response.ok({{classObject.camelClassname}}Service.{{methodName}}({{#parameters}}{{parameterVariable}}{{/parameters}}), MediaType.APPLICATION_JSON).build();{{/existResponse}}{{^existResponse}}return Response.ok().build();{{/existResponse}}
     }
