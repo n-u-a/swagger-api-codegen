@@ -1,0 +1,38 @@
+package jp.co.sample;
+
+/**
+ * 【クラスの説明を記載してください】
+ * 
+ * @author 【作成者名を記載してください】
+ * 
+ * @version 【バージョンを記載してください】
+ * @since 【バージョンを記載してください】
+ */
+@Component
+public class {{classObject.pascalClassname}}Business extends BusinessBase {
+
+    // TODO バージョン、作成者名を記入し、フォーマッターを適用後にこちらのコメントを削除してください。
+
+    @Autowired
+    private {{classObject.pascalClassname}}Dao {{classObject.camelClassname}}Dao;
+
+{{#classObject.apis}}
+    /**
+     * {{description}}
+     * 
+     {{#javadocParameters}}
+     * @param {{param}} {{paramDescription}}
+     {{/javadocParameters}}
+     {{#existResponse}}
+     * @return {{response.returnDescription}}
+     {{/existResponse}}
+     * @throws Exception
+     * @since 【バージョンを記載してください】
+     */
+    public {{#existResponse}}{{{response.responseValue}}}{{/existResponse}}{{^existResponse}}void{{/existResponse}} {{methodName}}({{#parameters}}{{{parameterType}}} {{parameterVariable}}{{/parameters}}) throws Exception {
+        {{#existResponse}}// TODO coding!;{{/existResponse}}
+        {{^existResponse}}// TODO coding!;{{/existResponse}}{{#existResponse}}return response;{{/existResponse}}
+    }
+
+{{/classObject.apis}}
+}

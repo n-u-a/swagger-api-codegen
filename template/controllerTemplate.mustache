@@ -1,0 +1,43 @@
+package jp.co.sample;
+
+/**
+ * 【クラスの説明を記載してください】
+ * 
+ * @author 【作成者名を記載してください】
+ * 
+ * @version 【バージョンを記載してください】
+ * @since 【バージョンを記載してください】
+ */
+@Path("/{{classObject.resource}}")
+@Controller
+public class {{classObject.pascalClassname}}Controller extends ControllerBase {
+
+    // TODO バージョン、作成者名を記入し、フォーマッターを適用後にこちらのコメントを削除してください。
+    // TODO パラメータやレスポンスの値がjson以外になる場合、@Produces, @Consumes, メソッドの引数およびreturn句に注意してください。
+
+    @Autowired
+    private {{classObject.pascalClassname}}Service {{classObject.camelClassname}}Service;
+
+{{#classObject.apis}}
+    /**
+     * {{summary}}
+     * {{description}}
+     * 
+     {{#javadocParameters}}
+     * @param {{param}} {{paramDescription}}
+     {{/javadocParameters}}
+     {{#existResponse}}* @return {{response.returnDescription}}{{/existResponse}}
+     * @throws Exception
+     * @since 【バージョンを記載してください】
+     */
+    @Path("{{{path}}}")
+    @Produces("{{{produce}}}")
+    @Consumes("application/json")
+    @{{httpMethod}}
+    public Response {{methodName}}({{#parameters}}{{{parameterType}}} {{parameterVariable}}{{/parameters}}) throws Exception {
+        {{^existResponse}}{{classObject.camelClassname}}Service.{{methodName}}({{#parameters}}{{{parameterVariable}}}{{/parameters}});{{/existResponse}}
+        {{#existResponse}}return Response.ok({{classObject.camelClassname}}Service.{{methodName}}({{#parameters}}{{parameterVariable}}{{/parameters}}), MediaType.APPLICATION_JSON).build();{{/existResponse}}{{^existResponse}}return Response.ok().build();{{/existResponse}}
+    }
+
+{{/classObject.apis}}
+}
