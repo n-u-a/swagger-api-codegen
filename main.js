@@ -2,22 +2,40 @@ const fs = require('fs');
 const changeCase = require('change-case');
 const path = require('path');
 
+/**
+ * yamlファイルを読み込む
+ */
 function loadYamlFile(filename) {
   const yaml = require('js-yaml');
   const yamlText = fs.readFileSync(filename, 'utf8')
   return yaml.safeLoad(yamlText);
 }
 
+/**
+ * pathからリソース部分を除外したパスを取得する
+ * @param {*} fullPath 
+ * @returns リソース部分を除外したパス
+ */
 function extractApiPath(fullPath) {
   let removeFirstSlash = fullPath.substring(fullPath.indexOf("\/") + 1);
   let removeTopPath = fullPath.substring(removeFirstSlash.indexOf("\/") + 1)
   return removeTopPath;
 }
 
-function extractDefinitionObject(def) {
-  return changeCase.pascalCase(def.replace("#/definitions/", ""))
+/**
+ * defenitionへのリンクを取り除いて、パスカルケースに変換したレスポンスオブジェクトの文字列を返却する。
+ * @param {*} responseDefenition レスポンスのdefenitionへのリンク
+ * @returns レスポンスオブジェクトの型(文字列)
+ */
+function extractDefinitionObject(responseDefenition) {
+  return changeCase.pascalCase(responseDefenition.replace("#/definitions/", ""))
 }
 
+/**
+ * レスポンスの定義から、レスポンスオブジェクトの型(文字列)を取得する。
+ * @param {*} responseSchema レスポンス定義
+ * @returns レスポンスオブジェクトの型(文字列)
+ */
 function extractResponseValue(responseSchema) {
 
   if (responseSchema) {
@@ -46,7 +64,7 @@ function extractResponseValue(responseSchema) {
             responseValue = "String"
           }
         } else {
-          // これは特例扱いにする、さすがに対応してられない
+          // これは特例で未対応とする。対応コストが高い
           // responseSchema {
           //  type: 'object',
           // properties: {
@@ -67,6 +85,13 @@ function extractResponseValue(responseSchema) {
   return responseValue;
 }
 
+/**
+ * ファイルを出力する。
+ * 
+ * @param {*} role 出力するファイルの機能名
+ * @param {*} renderObject ファイルに出力するテキスト
+ * @param {*} resourceName APIのリソース名
+ */
 function writeFiles(role, renderObject, resourceName) {
   // ファイル出力用のディレクトリを作成
 
@@ -91,7 +116,6 @@ function writeFiles(role, renderObject, resourceName) {
 if (require.main === module) {
   const _ = require('lodash');
   const Mustache = require('mustache');
-
   const readline = require('readline/promises');
 
   (async () => {
@@ -145,6 +169,7 @@ if (require.main === module) {
             camelClassname: changeCase.camelCase(resourceName)
           };
 
+          // APIごとの情報を取得
           let apis = [];
           _.forEach(pathsGroupByResource[resourceName], item => {
 
@@ -153,6 +178,7 @@ if (require.main === module) {
 
             let fullPath = item[httpMethod].path;
 
+            // パラメータに関する情報を設定
             // javadoc(メソッド)のパラメータを保持する配列
             let javadocParameters = [];
             // メソッドの引数に設定するパラメータの情報を保持する配列
@@ -216,9 +242,9 @@ if (require.main === module) {
           // ファイル出力
           let roles = ["controller", "service", "business", "dao"];
           roles.forEach(role => {
-            const contTemplateText = fs.readFileSync(path.join(__dirname, "template", `${role}Template.mustache`), 'utf8');
-            let contRenderObject = Mustache.render(contTemplateText, { classObject });
-            writeFiles(role, contRenderObject, resourceName);
+            const templateText = fs.readFileSync(path.join(__dirname, "template", `${role}Template.mustache`), 'utf8');
+            let renderObject = Mustache.render(templateText, { classObject });
+            writeFiles(role, renderObject, resourceName);
           })
         })
       });
