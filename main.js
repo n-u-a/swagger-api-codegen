@@ -93,19 +93,19 @@ function extractResponseValue(responseSchema) {
  * @param {*} resourceName APIのリソース名
  */
 function writeFiles(role, renderObject, resourceName) {
-  // ファイル出力用のディレクトリを作成
 
-  let rolePath = path.join(__dirname, "api", `/${role}`);
-  if (!fs.existsSync(rolePath)) {
-    fs.mkdir(rolePath, (err) => {
+  // ファイル出力用のディレクトリを作成
+  let exportDirPath = path.join(__dirname, "api", `/${resourceName}`);
+  if (!fs.existsSync(exportDirPath)) {
+    fs.mkdir(exportDirPath, (err) => {
       if (err) { throw err; }
     });
   }
 
   // ファイル出力
-  let targetPath = path.join(__dirname, "api", `/${role}`, `${changeCase.pascalCase(resourceName)}${changeCase.pascalCase(role)}.java`);
-  if (!fs.existsSync(targetPath)) {
-    fs.writeFile(targetPath, renderObject, (err, data) => {
+  let exportFilePath = path.join(exportDirPath, `${changeCase.pascalCase(resourceName)}${changeCase.pascalCase(role)}.java`);
+  if (!fs.existsSync(exportFilePath)) {
+    fs.writeFile(exportFilePath, renderObject, (err, data) => {
       if (err) console.log(err);
       // else console.log(`${changeCase.pascalCase(resourceName)}${changeCase.pascalCase(role)}.java 出力`);
     });
@@ -259,4 +259,3 @@ if (require.main === module) {
 
   })();
 }
-
