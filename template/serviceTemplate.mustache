@@ -9,10 +9,10 @@ package jp.co.sample;
  * @since 【バージョンを記載してください】
  */
 @Service
-@Transactional
 public class {{classObject.pascalClassname}}Service extends ServiceBase {
 
     // TODO バージョン、作成者名を記入し、フォーマッターを適用後にこちらのコメントを削除してください。
+    // TODO @Transactionalが必須かどうかを確認してください。
 
     @Autowired
     private {{classObject.pascalClassname}}Business {{classObject.camelClassname}}Business;
