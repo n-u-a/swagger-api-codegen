@@ -64,7 +64,7 @@ function extractResponseValue(responseSchema) {
             responseValue = "String"
           }
         } else {
-          // これは特例で未対応とする。対応コストが高い
+          // これは特例で未対応。対応コストが高い
           // responseSchema {
           //  type: 'object',
           // properties: {
@@ -85,6 +85,9 @@ function extractResponseValue(responseSchema) {
   return responseValue;
 }
 
+let resultMap = new Map();
+let resourceMap = new Map();
+
 /**
  * ファイルを出力する。
  * 
@@ -93,6 +96,8 @@ function extractResponseValue(responseSchema) {
  * @param {*} resourceName APIのリソース名
  */
 function writeFiles(role, renderObject, resourceName) {
+
+  resourceMap.set(`${changeCase.pascalCase(resourceName)}${changeCase.pascalCase(role)}.java`, renderObject)
 
   // ファイル出力用のディレクトリを作成
   let exportDirPath = path.join(__dirname, "api", `/${resourceName}`);
@@ -107,7 +112,6 @@ function writeFiles(role, renderObject, resourceName) {
   if (!fs.existsSync(exportFilePath)) {
     fs.writeFileSync(exportFilePath, renderObject, (err, data) => {
       if (err) console.log(err);
-      // else console.log(`${changeCase.pascalCase(resourceName)}${changeCase.pascalCase(role)}.java 出力`);
     });
   }
 }
@@ -244,15 +248,19 @@ if (require.main === module) {
           classObject.apis = apis;
 
           // ファイル出力
+          resourceMap = new Map()
           let roles = ["controller", "service", "business", "dao"];
           roles.forEach(role => {
             const templateText = fs.readFileSync(path.join(__dirname, "template", `${role}Template.mustache`), 'utf8');
             let renderObject = Mustache.render(templateText, { classObject });
             writeFiles(role, renderObject, resourceName);
           })
+
+          resultMap.set(resourceName, resourceMap)
         })
       });
 
+      return resultMap;
     } catch (err) {
       console.error(err.message);
     }
