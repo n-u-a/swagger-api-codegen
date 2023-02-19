@@ -97,7 +97,7 @@ function writeFiles(role, renderObject, resourceName) {
   // ファイル出力用のディレクトリを作成
   let exportDirPath = path.join(__dirname, "api", `/${resourceName}`);
   if (!fs.existsSync(exportDirPath)) {
-    fs.mkdir(exportDirPath, (err) => {
+    fs.mkdirSync(exportDirPath, (err) => {
       if (err) { throw err; }
     });
   }
@@ -105,7 +105,7 @@ function writeFiles(role, renderObject, resourceName) {
   // ファイル出力
   let exportFilePath = path.join(exportDirPath, `${changeCase.pascalCase(resourceName)}${changeCase.pascalCase(role)}.java`);
   if (!fs.existsSync(exportFilePath)) {
-    fs.writeFile(exportFilePath, renderObject, (err, data) => {
+    fs.writeFileSync(exportFilePath, renderObject, (err, data) => {
       if (err) console.log(err);
       // else console.log(`${changeCase.pascalCase(resourceName)}${changeCase.pascalCase(role)}.java 出力`);
     });
