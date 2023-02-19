@@ -12,7 +12,8 @@ package jp.co.sample;
 public class {{classObject.pascalClassname}}Service extends ServiceBase {
 
     // TODO バージョン、作成者名を記入し、フォーマッターを適用後にこちらのコメントを削除してください。
-    // TODO @Transactionalが必須かどうかを確認してください。
+    // TODO @Transactionalが必須かどうかを確認してください。更新、登録、削除を行わないAPIでは@Transactionalを削除してください。
+    // TODO 未対応の型と出力されている場合は、yamlを参考に型を修正してください。
 
     @Autowired
     private {{classObject.pascalClassname}}Business {{classObject.camelClassname}}Business;
@@ -30,7 +31,7 @@ public class {{classObject.pascalClassname}}Service extends ServiceBase {
      * @throws Exception
      * @since 【バージョンを記載してください】
      */
-    @Transactional
+    // TODO @Transactional
     public {{#existResponse}}{{{response.responseValue}}}{{/existResponse}}{{^existResponse}}void{{/existResponse}} {{methodName}}({{#parameters}}{{{parameterType}}} {{parameterVariable}}{{/parameters}}) throws Exception {
         {{^existResponse}}{{classObject.camelClassname}}Business.{{methodName}}({{#parameters}}{{{parameterVariable}}}{{/parameters}});{{/existResponse}}{{#existResponse}}return {{classObject.camelClassname}}Business.{{methodName}}({{#parameters}}{{parameterVariable}}{{/parameters}});{{/existResponse}}
     }
